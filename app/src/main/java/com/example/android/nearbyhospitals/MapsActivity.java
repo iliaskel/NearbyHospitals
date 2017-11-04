@@ -9,6 +9,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.example.android.nearbyhospitals.Utils.GetNearbyPlacesData;
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -59,13 +60,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        String searchUrl = buildSearchUrl(mSearchType);
         Object[] dataToTransfer = new Object[2];
         dataToTransfer[0] = mMap;
-        dataToTransfer[1] = buildSearchUrl(mSearchType);
+        dataToTransfer[1] = searchUrl;
 
         GetNearbyPlacesData getNearbyPlacesData = new GetNearbyPlacesData();
         getNearbyPlacesData.execute(dataToTransfer);
 
+        double currentLat = Double.valueOf(mCurrentLatString);
+        double currentLng = Double.valueOf(mCurrentLngString);
+
+        final CameraUpdate cameraPosition = CameraUpdateFactory.newLatLngZoom(new LatLng(currentLat, currentLng), 10f);
+
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mMap.setMyLocationEnabled(true);
+        mMap.animateCamera(cameraPosition);
+        mMap.moveCamera(cameraPosition);
     }
 
 

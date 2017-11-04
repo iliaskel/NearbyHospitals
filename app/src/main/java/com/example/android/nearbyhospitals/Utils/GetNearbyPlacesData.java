@@ -3,7 +3,6 @@ package com.example.android.nearbyhospitals.Utils;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,9 +30,9 @@ public class GetNearbyPlacesData extends AsyncTask<Object,String,String> {
         mMap=(GoogleMap)params[0];
         url=(String)params[1];
 
-        DownloadUrl downloadUrl=new DownloadUrl();
+        HttpResponse httpResponse =new HttpResponse();
         try {
-           googlePlacesData=downloadUrl.getResponseFromHttpRequest(url);
+           googlePlacesData= httpResponse.getResponseFromHttpRequest(url);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -52,7 +51,6 @@ public class GetNearbyPlacesData extends AsyncTask<Object,String,String> {
 
 
     private void showNearbyPlaces(List<HashMap<String,String>> nearbyPlaceList){
-
 
 
         for (int i=0;i<nearbyPlaceList.size();i++){

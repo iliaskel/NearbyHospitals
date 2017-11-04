@@ -12,7 +12,7 @@ import java.net.URL;
  * Created by ikelasid on 10/20/2017.
  */
 
-public class DownloadUrl {
+public class HttpResponse {
 
     public String getResponseFromHttpRequest(String myUrl) throws IOException {
 

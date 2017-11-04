@@ -1,10 +1,8 @@
 package com.example.android.nearbyhospitals;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
-import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -21,15 +19,8 @@ import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.LocationSettingsStates;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 
@@ -76,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
         findViesById();
 
         //making progress bar visible
-        setUpProgressBarVisibility();
+        switchProgressBarVisibility(true);
 
         // Get permissions && location
         getLocationPermissions();
@@ -164,13 +155,11 @@ public class MainActivity extends AppCompatActivity {
         switch (requestCode){
             case LOCATION_PERMISSION_CODE:
                 if(grantResults.length>0){
-                    for(int i =0 ; i<grantResults.length; i++){
-                        if(grantResults[i]!=PackageManager.PERMISSION_GRANTED )
-                            mLocationPermissionsGranted=false;
-                        return;
+                    if(grantResults[0]== PackageManager.PERMISSION_GRANTED){
+                        mLocationPermissionsGranted=true;
+                        switchProgressBarVisibility(false);
+                        getDeviceLastKnownLocation();
                     }
-                    mLocationPermissionsGranted=true;
-                    getDeviceLastKnownLocation();
                 }
         }
 
@@ -198,12 +187,12 @@ public class MainActivity extends AppCompatActivity {
                                 mManualLocation.setLatitude(40.632828);
                                 mManualLocation.setLongitude(22.946963);
                                 setListeners();
-                                setUpProgressBarVisibility();
+                                switchProgressBarVisibility(false);
                             }
                             else{
                                 Log.d(TAG, "coords "+ mLastKnownLocation.toString());
                                 setListeners();
-                                setUpProgressBarVisibility();
+                                switchProgressBarVisibility(false);
                             }
                         }
                         else {
@@ -229,19 +218,19 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-    private void setUpProgressBarVisibility() {
-        if(mProgressBar.getVisibility()==View.VISIBLE){
-            Log.d(TAG, "setUpProgressBarVisibility: VISIBLE");
-            mProgressBar.setVisibility(View.INVISIBLE);
-            mHospitalImageView.setClickable(true);
-            mPharmacyImageView.setClickable(true);
-        }
-        else{
-            Log.d(TAG, "setUpProgressBarVisibility: INVISIBLE");
+    private void switchProgressBarVisibility(boolean visibility) {
+        if(visibility){
+            Log.d(TAG, "switchProgressBarVisibility: INVISIBLE");
             mProgressBar.setVisibility(View.VISIBLE);
             mHospitalImageView.setClickable(false);
             mPharmacyImageView.setClickable(false);
         }
+        else{
+            Log.d(TAG, "switchProgressBarVisibility: VISIBLE");
+            mProgressBar.setVisibility(View.INVISIBLE);
+            mHospitalImageView.setClickable(true);
+            mPharmacyImageView.setClickable(true);
+            }
     }
 
     private void findViesById() {
