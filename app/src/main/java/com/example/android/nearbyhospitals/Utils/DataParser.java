@@ -80,7 +80,9 @@ public class DataParser {
             e.printStackTrace();
         }
 
-        return getPlaces(jsonArray);
+        List<HashMap<String,String>> places=getPlaces(jsonArray);
+
+        return places;
     }
 
 }
